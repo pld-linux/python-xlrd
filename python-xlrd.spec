@@ -2,11 +2,12 @@
 Summary:	Python interface to extracting data from Excel datasheets
 Summary(pl.UTF-8):	Pythonowy interfejs do odczytywania danych z arkuszy Excela
 Name:		python-%{module}
-Version:	0.7.1
+Version:	0.7.9
 Release:	1
 License:	BSD-style
 Group:		Development/Languages/Python
 Source0:	http://pypi.python.org/packages/source/x/xlrd/%{module}-%{version}.tar.gz
+# Source0-md5:	8e6833676d78ef65515481952eb0fd76
 URL:		http://www.lexicon.net/sjmachin/xlrd.htm
 BuildRequires:	python-devel
 BuildRequires:	rpm-pythonprov
@@ -34,14 +35,23 @@ rm -rf $RPM_BUILD_ROOT
 	--root=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
 install xlrd/examples/namesdemo.xls $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install xlrd/examples/xlrdnameAPIdemo.py $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install scripts/runxlrd.py  $RPM_BUILD_ROOT%{_bindir}
+mv $RPM_BUILD_ROOT%{_bindir}/runxlrd.py $RPM_BUILD_ROOT%{_datadir}/%{name}
 %py_ocomp $RPM_BUILD_ROOT%{py_sitescriptdir}
 %py_comp $RPM_BUILD_ROOT%{py_sitescriptdir}
-%py_ocomp $RPM_BUILD_ROOT%{_bindir}
-%py_comp $RPM_BUILD_ROOT%{_bindir}
+%py_comp $RPM_BUILD_ROOT%{_datadir}/%{name}
 %py_postclean
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/%{name}/runxlrd.py \
+	$RPM_BUILD_ROOT%{py_sitescriptdir}/xlrd/{examples,doc}
+
+cat - > $RPM_BUILD_ROOT%{_bindir}/runxlrd <<EOF
+#!/bin/sh
+%{__python} %{_datadir}/%{name}/runxlrd.pyc "\$@"
+EOF
+chmod a+x $RPM_BUILD_ROOT%{_bindir}/runxlrd
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -52,7 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py_sitescriptdir}/%{module}
 %{py_sitescriptdir}/%{module}/*.py[co]
 %{_examplesdir}/%{name}-%{version}
-%attr(755,root,root) %{_bindir}/runxlrd.py[oc]
+%{_datadir}/%{name}/runxlrd.pyc
+%attr(755,root,root) %{_bindir}/runxlrd
 %if "%{py_ver}" > "2.4"
 %{py_sitescriptdir}/%{module}-*.egg-info
 %endif
