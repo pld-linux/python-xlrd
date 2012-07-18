@@ -47,7 +47,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/runxlrd.py $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 cat > $RPM_BUILD_ROOT%{_bindir}/runxlrd <<'EOF'
 #!/bin/sh
-%{__python} %{_datadir}/%{name}/runxlrd.pyc "$@"
+exec %{__python} %{_datadir}/%{name}/runxlrd.pyc "$@"
 EOF
 chmod a+x $RPM_BUILD_ROOT%{_bindir}/runxlrd
 
