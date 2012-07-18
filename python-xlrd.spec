@@ -45,7 +45,7 @@ mv $RPM_BUILD_ROOT%{_bindir}/runxlrd.py $RPM_BUILD_ROOT%{_datadir}/%{name}
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/%{name}/runxlrd.py \
 	$RPM_BUILD_ROOT%{py_sitescriptdir}/xlrd/{examples,doc}
 
-cat > $RPM_BUILD_ROOT%{_bindir}/runxlrd <<-EOF
+cat > $RPM_BUILD_ROOT%{_bindir}/runxlrd <<'EOF'
 #!/bin/sh
 %{__python} %{_datadir}/%{name}/runxlrd.pyc "$@"
 EOF
