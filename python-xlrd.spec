@@ -3,7 +3,7 @@ Summary:	Python interface to extracting data from Excel datasheets
 Summary(pl.UTF-8):	Pythonowy interfejs do odczytywania danych z arkuszy Excela
 Name:		python-%{module}
 Version:	0.7.9
-Release:	1
+Release:	2
 License:	BSD-style
 Group:		Development/Languages/Python
 Source0:	http://pypi.python.org/packages/source/x/xlrd/%{module}-%{version}.tar.gz
@@ -60,6 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py_sitescriptdir}/%{module}
 %{py_sitescriptdir}/%{module}/*.py[co]
 %{_examplesdir}/%{name}-%{version}
+%dir %{_datadir}/%{name}
 %{_datadir}/%{name}/runxlrd.pyc
 %attr(755,root,root) %{_bindir}/runxlrd
 %if "%{py_ver}" > "2.4"
