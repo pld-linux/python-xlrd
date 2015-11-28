@@ -26,14 +26,12 @@ Pythonowy interfejs do odczytywania danych z arkuszy Excela
 %setup -q -n %{module}-%{version}
 
 %build
-%{__python} setup.py build
+%py_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__python} setup.py install \
-	--optimize=2 \
-	--root=$RPM_BUILD_ROOT
+%py_install
 
 %{__mv} $RPM_BUILD_ROOT%{_bindir}/runxlrd{.py,}
 %{__sed} -i -e 's|/usr/bin/env python|%{__python}|' $RPM_BUILD_ROOT%{_bindir}/runxlrd
