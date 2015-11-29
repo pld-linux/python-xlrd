@@ -11,7 +11,7 @@ Source0:	http://pypi.python.org/packages/source/x/xlrd/%{module}-%{version}.tar.
 URL:		http://www.lexicon.net/sjmachin/xlrd.htm
 BuildRequires:	python-devel >= 1:2.6
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.219
+BuildRequires:	rpmbuild(macros) >= 1.710
 Requires:	python >= 1:2.6
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
