@@ -1,18 +1,30 @@
+#
+# Conditional build:
+%bcond_without	python2	# CPython 2.x module
+%bcond_without	python3	# CPython 3.x module
+
 %define		module	xlrd
 Summary:	Python interface to extracting data from Excel datasheets
 Summary(pl.UTF-8):	Pythonowy interfejs do odczytywania danych z arkuszy Excela
 Name:		python-%{module}
-Version:	0.9.3
-Release:	2
+Version:	2.0.1
+Release:	1
 License:	BSD-style
 Group:		Development/Languages/Python
-Source0:	http://pypi.python.org/packages/source/x/xlrd/%{module}-%{version}.tar.gz
-# Source0-md5:	6f3325132f246594988171bc72e1a385
-URL:		http://www.lexicon.net/sjmachin/xlrd.htm
-BuildRequires:	python-devel >= 1:2.6
+Source0:	https://files.pythonhosted.org/packages/source/x/xlrd/%{module}-%{version}.tar.gz
+# Source0-md5:	ae3f951c857a490d432f0a7d722352bf
+URL:		https://www.python-excel.org/
+%if %{with python2}
+BuildRequires:	python-modules >= 1:2.7
+BuildRequires:	python-setuptools
+%endif
+%if %{with python3}
+BuildRequires:	python3-modules >= 1:3.6
+BuildRequires:	python3-setuptools
+%endif
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.710
-Requires:	python >= 1:2.6
+BuildRequires:	rpmbuild(macros) >= 1.714
+Requires:	python-modules >= 1:2.7
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -22,32 +34,63 @@ Python interface to extracting data from Excel datasheets
 %description -l pl.UTF-8
 Pythonowy interfejs do odczytywania danych z arkuszy Excela
 
+%package -n python3-%{module}
+Summary:	Python interface to extracting data from Excel datasheets
+Summary(pl.UTF-8):	Pythonowy interfejs do odczytywania danych z arkuszy Excela
+Requires:	python3-modules >= 1:3.6
+
+%description -n python3-%{module}
+Python interface to extracting data from Excel datasheets
+
+%description -n python3-%{module} -l pl.UTF-8
+Pythonowy interfejs do odczytywania danych z arkuszy Excela
+
 %prep
 %setup -q -n %{module}-%{version}
 
 %build
+%if %{with python2}
 %py_build
+%endif
+
+%if %{with python3}
+%py3_build
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with python2}
 %py_install
+%py_postclean
+%{__sed} -i -e 's|/usr/bin/env python|%{__python}|' $RPM_BUILD_ROOT%{_bindir}/runxlrd.py
+%endif
+
+%if %{with python3}
+%py3_install
+%{__sed} -i -e 's|/usr/bin/env python|%{__python3}|' $RPM_BUILD_ROOT%{_bindir}/runxlrd.py
+%endif
 
 %{__mv} $RPM_BUILD_ROOT%{_bindir}/runxlrd{.py,}
-%{__sed} -i -e 's|/usr/bin/env python|%{__python}|' $RPM_BUILD_ROOT%{_bindir}/runxlrd
 
-%py_ocomp $RPM_BUILD_ROOT%{py_sitescriptdir}
-%py_comp $RPM_BUILD_ROOT%{py_sitescriptdir}
-%py_postclean
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with python2}
 %files
 %defattr(644,root,root,755)
-%dir %{py_sitescriptdir}/%{module}
-%{py_sitescriptdir}/%{module}/*.py[co]
+%{py_sitescriptdir}/%{module}
+%if %{without python3}
 %attr(755,root,root) %{_bindir}/runxlrd
-%if "%{py_ver}" > "2.4"
+%endif
 %{py_sitescriptdir}/%{module}-*.egg-info
+%endif
+
+%if %{with python3}
+%files -n python3-%{module}
+%defattr(644,root,root,755)
+%{py3_sitescriptdir}/%{module}
+%attr(755,root,root) %{_bindir}/runxlrd
+%{py3_sitescriptdir}/%{module}-*.egg-info
 %endif
